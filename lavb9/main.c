@@ -1,84 +1,97 @@
 #pragma warning(disable : 4996)
+#pragma warning(disable :4703)
 #include <stdio.h>
 #define MAXLINE 1024
-#define YES 1
-#define NO 0
-
-int main(void)
+#define Location_data "C:\\Users\\Коля\\source\\repos\\lavb9\\Test.txt"
+#define Location_res  "C:\\Users\\Коля\\source\\repos\\lavb9\\Result.txt"
+int main(int argc, char *argv[]) //программа получает входные аргументы
 {
-	// указатели на структуру типа FILE для
-	// входной и выходного файлов
-	FILE *fpin;
-	FILE *fpout;
-
-	char line[MAXLINE]; // текущая строка
-	char *ptr;
-	char *in_ptr;
-
-	int cnt = 0;
-
-	// открыть файл для чтения
-	fpin = fopen("test\\test.txt", "w");
-	if (fpin == NULL)
-
-		return; // ошибка при открытии файла
-	   // открыть файл для записи
-	fpout = fopen("test\\result.txt", "wt");
-	if (fpout == NULL)
-
-		return; // ошибка при открытии файла
-	fprintf(fpin, "Скопировать содержимое текстового файла, ограничив длину строки N символами.Слова, не помещающиеся в строку заданной длины, не копировать.");
-
-
 
 	int N = 0;
-	flag = 0;
-	scanf();
-
-
-	while (!feof(fpin))// цикл до конца файла
+	int cnt_last = 0;
+	int flag = 0;//повтор разделителей
+	int cnt_sim = 0;
+	int cnt_wo = 0;// счётчик слов
+	int max_cnt = 0;//число слов в самой длинной строке
+	int n_str = 0;//номер строки в которой определили число слов
+	int rgt = 0;//номер нужной строки
+	
+	FILE *fpin;//для считывания информации из файла
+	FILE *fpout;//для записи информации из файла
+	//char file_name[100] = "C:\\Users\\Коля\\source\\repos\\lavb9\\Test"; // файл для чтения по умолчанию
+	//char result_name[100] = "C:\\Users\\Коля\\source\\repos\\lavb9\\Result"; // файл для результата по умолчанию
+	
+	char line[MAXLINE];//считанная строка
+	char *ptr;//указатель на строку
+	int c = 0;
+	
+	if (Location_data != "")
 	{
-		// чтение строки
-		ptr = fgets(line, MAXLINE, fpin);
-		if (ptr == NULL)
-			break; // файл исчерпан
-		while (*ptr != '\0') // цикл до конца строки
-		{
-			
-
-
-
-			if (c == ' ' || c == '.' || c == ',' || c == '\n' || c == '\0' || c == '?' || c == '!' || c == ';' || c == ':' ||
-				c == '-' || c == '_' || c == '(' || c == ')' || c == '\t' || c == '/' || c == '&' || c == '"')
-			{
-				cnt = 0;
-				*ptr++ = *in_ptr++;
-				flag = 1;
-
-			}
-			else
-			{
-
-				if (flag == NO)
-				{
-					flag = YES;
-					ptr = in_ptr;
-				}
-				cnt++;
-			}
-
-
-
-
-
-
-
-
-		}
-		fputs(line, fpout); // запись строки
+		fpin = fopen(Location_data, "rt"); //открытие файла для чтения
 	}
-	fclose(fpin); // закрыть входной файл
-	fclose(fpout); // закрыть выходной файл
+	else fpin = fopen(argv[1], "rt");
+	if (fpin == NULL)//если не удалось открыть файл или он пустой
+	{
+		printf("Возможно Вы не ввели адрес файла с данными.\n Это можно сделать через входные аргменты или задать адрес в константы в начале программы. \n Location_data - константа содержащая адрес файла с данными. \n Location_res - константа содержащая адрес файла для вывода строк. \n Чтобы внести входные аргументы: \n Windows: открываем консоль запускаем файл exe нашего проека и через пробел к нему прописываем входные параметры.\n Пример: 9 Laba it.exe Location_data Location_res \n MAC OS: Комбинация клавишь Cmd и <  затем  первым параметром вводить Location_data, вторым  Location_res \n");
+		return 0;
+	}
+	// printf("Введите N - число символоыв в строке \n");
+	N = 12;
+	//  scanf("%i\n", &N);
+	while (!feof(fpin)) //конец файла
+	{
+		ptr = fgets(line, MAXLINE, fpin);//?? //считывание строки
+		if (ptr == NULL) //если "нет" строки
+			break;
+		
+		//*ptr == '\0' ? (c = *ptr) : (c = c);
+		
+		while ( *ptr != '\0' )//конец строки
+		{
+			//*ptr == '\0' ? (c = 1) : (c = 0);
 
-	return 0;
+			if ((*ptr == ' ' || *ptr == '.' || *ptr == ',' || *ptr == '\n' || *ptr == '\0'))//разделители между словами и строками
+			{
+				cnt_last = cnt_sim;
+				(flag == 0) ? (cnt_wo++) : (cnt_wo = cnt_wo);//увеличить колво
+				//cnt++;//счетчик колва слов
+				flag = 1;//повторяющийся разделитель
+			}
+			else flag = 0;//начинается слово
+			ptr++;//следующий символ строки
+			if (cnt_sim == N)
+				break;
+			else cnt_sim++;
+		}
+		//  n_str++;//счетчик строк
+		printf("%i\n %i\n%i\n", cnt_wo, cnt_sim, cnt_last);
+		printf("%s\n", line);
+
+		if (Location_res != "")
+		{
+			fpout = fopen(Location_res, "at");//открытие файла для записи
+		}
+		else fpout = fopen(argv[2], "at");
+		if (fpout == NULL)//если не удалось открыть файл или он пустой
+		{
+			printf("Возможно Вы не ввели адрес файла для вывода.\n Это можно сделать через входные аргменты или задать адрес в константы в начале программы. \n Location_data - константа содержащая адрес файла с данными. \n Location_res - константа содержащая адрес файла для вывода строк. \n Чтобы внести входные аргументы: \n Windows: открываем консоль запускаем файл exe нашего проека и через пробел к нему прописываем входные параметры.\n Пример: 9 Laba it.exe Location_data Location_res \n MAC OS: Комбинация клавишь Cmd и <  затем  первым параметром вводить Location_data, вторым  Location_res\n");
+			return 0;
+		}
+		for (int i = 0; i < cnt_last; i++)
+		{
+			printf("%c", line[i]);
+			fprintf(fpout, "%c", line[i]);
+		}
+		fprintf(fpout, "\n");
+		cnt_last = 0;
+		cnt_wo = 0;
+		cnt_sim = 0;
+
+		 
+	}
+	 
+	fclose(fpin);
+	fclose(fpout);
 }
+
+
