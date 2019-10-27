@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 			else cnt_sim++;
 		}
 		//  n_str++;//счетчик строк
-		printf("%i\n %i\n%i\n", cnt_wo, cnt_sim, cnt_last);
+		printf("%i\n%i\n%i\n", cnt_wo, cnt_sim, cnt_last);
 		printf("%s\n", line);
 
 		if (Location_res != "")
