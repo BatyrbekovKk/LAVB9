@@ -16,13 +16,14 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 	int n_str = 0;//номер строки в которой определили число слов
 	int rgt = 0;//номер нужной строки
 	
+
+
 	FILE *fpin;//для считывания информации из файла
 	FILE *fpout;//для записи информации из файла
-	//char file_name[100] = "C:\\Users\\Коля\\source\\repos\\lavb9\\Test"; // файл для чтения по умолчанию
-	//char result_name[100] = "C:\\Users\\Коля\\source\\repos\\lavb9\\Result"; // файл для результата по умолчанию
 	
 	char line[MAXLINE];//считанная строка
 	char *ptr;//указатель на строку
+	char *prev_ptr;
 	int c = 0;
 	
 	if (Location_data != "")
@@ -46,7 +47,7 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 		
 		//*ptr == '\0' ? (c = *ptr) : (c = c);
 		
-		while ( *ptr != '\0' )//конец строки
+		while ( ( (prev_ptr != '\n')&&(ptr == '\0')) || (ptr != '\0')) //конец строки
 		{
 			//*ptr == '\0' ? (c = 1) : (c = 0);
 
@@ -58,6 +59,7 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 				flag = 1;//повторяющийся разделитель
 			}
 			else flag = 0;//начинается слово
+			prev_ptr = *ptr;
 			ptr++;//следующий символ строки
 			if (cnt_sim == N)
 				break;
