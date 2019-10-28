@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 	
 	char line[MAXLINE];//считанная строка
 	char *ptr;//указатель на строку
-	char *prev_ptr;
+	char prev_ptr = "";
 	int c = 0;
 	
 	if (Location_data != "")
