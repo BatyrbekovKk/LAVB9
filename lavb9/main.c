@@ -8,13 +8,15 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 {
 
 	int N = 0;
-	int cnt_last = 0;
-	int flag = 0;//повтор разделителей
+///	int cnt_last = 0;
+	int flag = 1;//повтор разделителей
 	int cnt_sim = 0;
-	int cnt_wo = 0;// счЄтчик слов
-	int max_cnt = 0;//число слов в самой длинной строке
-	int n_str = 0;//номер строки в которой определили число слов
-	int rgt = 0;//номер нужной строки
+	//int cnt_wo = 0;// счЄтчик слов
+	//int max_cnt = 0;//число слов в самой длинной строке
+	//int n_str = 0;//номер строки в которой определили число слов
+	//int rgt = 0;//номер нужной строки
+	//int cnt = 0;
+	int razd = 0;
 
 
 
@@ -23,7 +25,7 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 
 	char line[MAXLINE];//считанна€ строка
 	char *ptr;//указатель на строку
-	char prev_ptr = "";
+//	char prev_ptr = "";
 	int c = 0;
 
 	printf("Enter N\n"); // ввод N
@@ -42,9 +44,9 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 
 	if (Location_res != "")
 	{
-		fpout = fopen(Location_res, "at");//открытие файла дл€ записи
+		fpout = fopen(Location_res, "w");//открытие файла дл€ записи
 	}
-	else fpout = fopen(argv[2], "at");
+	else fpout = fopen(argv[2], "w");
 
 	if (fpout == NULL)//если не удалось открыть файл или он пустой
 	{
@@ -54,65 +56,105 @@ int main(int argc, char *argv[]) //программа получает входные аргументы
 
 	while (!feof(fpin)) //конец файла
 	{
-		ptr = fgets(line, MAXLINE, fpin); 
-		if (ptr == NULL) 
+		ptr = fgets(line, MAXLINE, fpin);
+		if (ptr == NULL)
 			break;
 
 		while (*ptr != "\0") //(*ptr != '\n') && (*(ptr + 1) == '\0') && (*ptr != '\0') || (*ptr != '\0'))
 		{
-			while (cnt_sim <= N || *ptr != "\n")
+			if (cnt_sim == 0)
 			{
-				fputc(*ptr, fpout);
-         
-				if (cnt_sim == N)
+				while ((*ptr != ' ') && (*ptr != '\n'))
 				{
-					cnt_sim = 0;
-					fputc(*ptr, fpout);
-					fputc('\n', fpout);
+					cnt_sim++;
+					*ptr++;
 				}
-				cnt_sim++;
-				ptr++;
+				if (cnt_sim >= N)
+				{
+					ptr = line;
+					*ptr = '\0';
+					cnt_sim = 0;
+					break;
+				}
+				ptr = line;
+				cnt_sim = 0;
+
 			}
+			cnt_sim++;
 
-			//if ((*ptr == ' ' || *ptr == '.' || *ptr == ',' || *ptr == '\n' || *(ptr + 1) == '\0'))//разделители между словами и строками
-			//{
-			//	cnt_last = cnt_sim;
-			//	(flag == 0) ? (cnt_wo++) : (cnt_wo = cnt_wo);//увеличить колво
-			//	//cnt++;//счетчик колва слов
-			//	flag = 1;//повтор€ющийс€ разделитель
+			if (*ptr == ' ')
+			{
+				razd = cnt_sim; //razd - разделитель
 
-			//	((*ptr != '\n') && (*(ptr + 1) == '\0') && (*ptr != '\0')) ? (cnt_last++) : (cnt_last = cnt_last);
-			//}
-			//else flag = 0;//начинаетс€ слово
-
-			//prev_ptr = *ptr;
-			//ptr++;//следующий символ строки
-			//if (cnt_sim == N)
-			//	break;
-			//else cnt_sim++;
+			}
+			if (cnt_sim == N)
+			{
+				*(ptr + razd - cnt_sim) = '\0';
+				cnt_sim = 0;
+				fprintf(fpout, "\n");
+				break;
+			}
+			*ptr++;
 
 		}
-		fputs(line, fpout); // запись строки
+		fputs(line, fpout);
+		cnt_sim = 0;
 
-		//  n_str++;//счетчик строк
-		/*printf("%i\n%i\n%i\n", cnt_wo, cnt_sim, cnt_last);
-		printf("%s\n", line);*/
 
-		
-		/*for (int i = 0; i < cnt_last; i++)
+		/*while (cnt_sim <= N || *ptr != "\n")
 		{
-			printf("%c", line[i]);
-			fprintf(fpout, "%c", line[i]);
+			fputc(*ptr, fpout);
+
+			if (cnt_sim == N)
+			{
+				cnt_sim = 0;
+				fputc(*ptr, fpout);
+				fputc('\n', fpout);
+			}
+			cnt_sim++;
+			ptr++;
 		}*/
 
-		/*fprintf(fpout, "\n");
-		cnt_last = 0;
-		cnt_wo = 0;
-		cnt_sim = 0;*/
+		//if ((*ptr == ' ' || *ptr == '.' || *ptr == ',' || *ptr == '\n' || *(ptr + 1) == '\0'))//разделители между словами и строками
+		//{
+		//	cnt_last = cnt_sim;
+		//	(flag == 0) ? (cnt_wo++) : (cnt_wo = cnt_wo);//увеличить колво
+		//	//cnt++;//счетчик колва слов
+		//	flag = 1;//повтор€ющийс€ разделитель
 
+		//	((*ptr != '\n') && (*(ptr + 1) == '\0') && (*ptr != '\0')) ? (cnt_last++) : (cnt_last = cnt_last);
+		//}
+		//else flag = 0;//начинаетс€ слово
+
+		//prev_ptr = *ptr;
+		//ptr++;//следующий символ строки
+		//if (cnt_sim == N)
+		//	break;
+		//else cnt_sim++;
 
 	}
+	//fputs(line, fpout); // запись строки
 
+	//  n_str++;//счетчик строк
+	/*printf("%i\n%i\n%i\n", cnt_wo, cnt_sim, cnt_last);
+	printf("%s\n", line);*/
+
+
+	/*for (int i = 0; i < cnt_last; i++)
+	{
+		printf("%c", line[i]);
+		fprintf(fpout, "%c", line[i]);
+	}*/
+
+	/*fprintf(fpout, "\n");
+	cnt_last = 0;
+	cnt_wo = 0;
+	cnt_sim = 0;*/
+
+
+
+
+	fprintf(fpout, "\n\nN = %d", N);
 	fclose(fpin);
 	fclose(fpout);
 }
